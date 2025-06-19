@@ -15,7 +15,7 @@ root.render(
   <ThemeProvider theme={darkTheme}>
     <CssBaseline />
     <App />
-  </ThemeProvider>,
-  document.getElementById('root')
+  </ThemeProvider>
 );
+
 reportWebVitals();

@@ -48,21 +48,21 @@ const App = () => {
     fetchReviews(game.appid, name);                // ✅ pass name to reviews
   };
 
-  const fetchGameName = async (appid) => {
-    try {
-      const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
-      const appData = response.data[String(appid)];
+ const fetchGameName = async (appid) => {
+  try {
+    const response = await axios.get(`http://localhost:5000/gamename/${appid}`);
+    const appData = response.data[String(appid)];
 
-      if (appData && appData.success && appData.data?.name) {
-        return appData.data.name;
-      } else {
-        return "Unknown Game";
-      }
-    } catch (error) {
-      console.error("Failed to fetch game name:", error);
+    if (appData && appData.success && appData.data?.name) {
+      return appData.data.name;
+    } else {
       return "Unknown Game";
     }
-  };
+  } catch (error) {
+    console.error("Failed to fetch game name:", error);
+    return "Unknown Game";
+  }
+};
 
   return (
     <div className="app-container">
