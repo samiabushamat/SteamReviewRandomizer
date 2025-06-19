@@ -19,7 +19,7 @@ const App = () => {
   // and updates the results state with the fetched data.
   const handleSearch = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/gameinfo/${appid}`);
+      const res = await axios.get(`http://localhost:5000/gameinfo/${appid}`);
       setResults(res.data);
     } catch (err) {
       console.error(err);
@@ -59,7 +59,7 @@ const App = () => {
 
   const fetchGameName = async (appid) => {
     try {
-      const response = await axios.get(`http://localhost:3000/gameinfo/${appid}`);
+      const response = await axios.get(`http://localhost:5000/gameinfo/${appid}`);
 
       const appData = response.data[String(appid)];
 
