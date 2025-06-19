@@ -6,6 +6,11 @@ const cors = require('cors');
 
 const app = express();
 
+app.get('/', (req, res) => {
+  res.send('🎉 Steam Review API is live!');
+});
+
+
 const corsOptions = {
   origin: ['http://localhost:3000', 'https://steam-review-randomizer.web.app'],
   methods: ['GET'],
