@@ -29,6 +29,31 @@ app.get('/search/:query', async (req, res) => {
   }
 });
 
+app.get('/reviews/:appid', async (req, res) => {
+  const { appid } = req.params;
+  const { cursor = '*', num = 20 } = req.query;
+
+  try {
+    const response = await axios.get(
+      `https://store.steampowered.com/appreviews/${appid}`,
+      {
+        params: {
+          json: 1,
+          cursor,
+          num_per_page: num,
+          filter: 'recent',
+          language: 'english',
+        },
+      }
+    );
+    res.json(response.data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch reviews' });
+  }
+});
+
+
 app.get('/gameinfo/:appid', async (req, res) => {
   const { appid } = req.params;
   try {

@@ -4,8 +4,6 @@ import Card from './components/Card';
 import './styles/app.css';
 
 const App = () => {
-
-  // State variables
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [appid, setAppid] = useState(null);
@@ -13,25 +11,32 @@ const App = () => {
   const [randomReview, setRandomReview] = useState(null);
   const [gameName, setGameName] = useState('');
 
-
-  // Function to handle search
-  // It fetches game data based on the user's query
-  // and updates the results state with the fetched data.
   const handleSearch = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/gameinfo/${appid}`);
+      const res = await axios.get(`http://localhost:5000/search/${query}`);
       setResults(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Search failed:", err);
     }
   };
 
-  // Function to fetch reviews for a specific game
-  // It takes the appid and game name as parameters,
-  // fetches reviews from the API, enriches them with the game name,
+  const fetchGameName = async (appid) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/gameinfo/${appid}`);
+      const appData = response.data[String(appid)];
+      if (appData?.success && appData.data?.name) {
+        return appData.data.name;
+      }
+      return "Unknown Game";
+    } catch (err) {
+      console.error("Game name fetch failed:", err);
+      return "Unknown Game";
+    }
+  };
+
   const fetchReviews = async (appid, name) => {
     try {
-      const res = await axios.get(`http://localhost:5000/gameinfo/${appid}`);
+      const res = await axios.get(`http://localhost:5000/reviews/${appid}?cursor=*&num=30`);
       const enrichedReviews = res.data.reviews.map((review) => ({
         ...review,
         gameName: name,
@@ -39,7 +44,7 @@ const App = () => {
       setReviews(enrichedReviews);
       setRandomReview(getRandomReview(enrichedReviews));
     } catch (err) {
-      console.error(err);
+      console.error("Review fetch failed:", err);
     }
   };
 
@@ -51,27 +56,9 @@ const App = () => {
   const handleSelectGame = async (game) => {
     setAppid(game.appid);
     setResults([]);
-
-    const name = await fetchGameName(game.appid); // ✅ get actual name
-    setGameName(name);                             // ✅ set game name
-    fetchReviews(game.appid, name);                // ✅ pass name to reviews
-  };
-
-  const fetchGameName = async (appid) => {
-    try {
-      const response = await axios.get(`http://localhost:5000/gameinfo/${appid}`);
-
-      const appData = response.data[String(appid)];
-
-      if (appData && appData.success && appData.data?.name) {
-        return appData.data.name;
-      } else {
-        return "Unknown Game";
-      }
-    } catch (error) {
-      console.error("Failed to fetch game name:", error);
-      return "Unknown Game";
-    }
+    const name = await fetchGameName(game.appid);
+    setGameName(name);
+    fetchReviews(game.appid, name);
   };
 
   return (
