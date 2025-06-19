@@ -53,4 +53,17 @@ app.get('/reviews/:appid', async (req, res) => {
   }
 });
 
-app.listen(5000, () => console.log('✅ Server running on http://localhost:5000'));
+app.get('/gamename/:appid', async (req, res) => {
+  const { appid } = req.params;
+
+  try {
+    const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Failed to fetch game name:', error.message);
+    res.status(500).json({ error: 'Failed to fetch game name' });
+  }
+});
+
+
+app.listen(5000, () => console.log(' Server running on http://localhost:3000'));

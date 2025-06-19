@@ -44,7 +44,6 @@ function SteamReviews({ appid }) {
 
   useEffect(() => {
     fetchReviews();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appid]);
 
   return (

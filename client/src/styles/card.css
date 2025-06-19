@@ -1,0 +1,27 @@
+/* GameReviewCard.css */
+.review-card {
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  width: 800px;
+  height: 500px;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+.review-card h2 {
+  margin: 0 0 10px;
+  font-size: 1.5rem;
+}
+
+.review-text {
+  font-style: italic;
+  margin: 10px 0;
+}
+
+.review-meta {
+  font-size: 0.9rem;
+  color: #bbb;
+}

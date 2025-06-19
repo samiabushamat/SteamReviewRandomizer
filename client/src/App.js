@@ -1,68 +1,112 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import SteamReviews from './SteamReviews';
+import Card from './components/Card';
+import './styles/app.css';
 
-function App() {
+const App = () => {
   const [query, setQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [appid, setAppid] = useState('');
-  const [error, setError] = useState('');
+  const [results, setResults] = useState([]);
+  const [appid, setAppid] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [randomReview, setRandomReview] = useState(null);
+  const [gameName, setGameName] = useState('');
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    setSearchResults([]);
-    setAppid('');
-    setError('');
-
+  const handleSearch = async () => {
     try {
-      const response = await axios.get(`https://steamreviewrandomizer.onrender.com/search/${query}`);
-      if (response.data.length > 0) {
-        setSearchResults(response.data);
-      } else {
-        setError('No games found.');
-      }
+      const res = await axios.get(`https://steamreviewrandomizer.onrender.com/search/${query}`);
+      setResults(res.data);
     } catch (err) {
       console.error(err);
-      setError('Search failed. Try again.');
     }
   };
 
-  const handleSelect = (selectedAppid) => {
-    setAppid(selectedAppid);
-    setSearchResults([]);
+  const fetchReviews = async (appid, name) => {
+    try {
+      const res = await axios.get(`https://steamreviewrandomizer.onrender.com/reviews/${appid}?cursor=*&num=30`);
+      const enrichedReviews = res.data.reviews.map((review) => ({
+        ...review,
+        gameName: name,
+      }));
+      setReviews(enrichedReviews);
+      setRandomReview(getRandomReview(enrichedReviews));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getRandomReview = (arr) => {
+    if (!arr.length) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+  };
+
+  const handleSelectGame = async (game) => {
+    setAppid(game.appid);
+    setResults([]);
+
+    const name = await fetchGameName(game.appid); // ✅ get actual name
+    setGameName(name);                             // ✅ set game name
+    fetchReviews(game.appid, name);                // ✅ pass name to reviews
+  };
+
+  const fetchGameName = async (appid) => {
+    try {
+      const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
+      const appData = response.data[String(appid)];
+
+      if (appData && appData.success && appData.data?.name) {
+        return appData.data.name;
+      } else {
+        return "Unknown Game";
+      }
+    } catch (error) {
+      console.error("Failed to fetch game name:", error);
+      return "Unknown Game";
+    }
   };
 
   return (
-    <div className="App">
-      <h1>Steam Game Reviews</h1>
-
-      <form onSubmit={handleSearch}>
+    <div className="app-container">
+      <h1 className="body">Steam Review Randomizer</h1>
+      <div className="search-container">
         <input
           type="text"
-          placeholder="Enter game name..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search for a game..."
         />
-        <button type="submit">Search</button>
-      </form>
+        <button className="search-button" onClick={handleSearch}>Search</button>
+      </div>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      {searchResults.length > 0 && (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {searchResults.map((game) => (
-            <li key={game.appid}>
-              <button onClick={() => handleSelect(game.appid)}>
-                {game.name}
-              </button>
+      {results.length > 0 && (
+        <ul>
+          {results.map((game) => (
+            <li key={game.appid} onClick={() => handleSelectGame(game)}>
+              {game.name}
             </li>
           ))}
         </ul>
       )}
 
-      {appid && <SteamReviews appid={appid} />}
+      {randomReview && (
+        <Card
+          gameName={randomReview.gameName}
+          reviewText={randomReview.review}
+          reviewer={randomReview.personaName}
+          hoursPlayed={(randomReview.author.playtime_forever / 60).toFixed(1)}
+          reactions={{
+            thumbsUp: randomReview.votes_up,
+            funny: randomReview.votes_funny,
+          }}
+        />
+      )}
+
+      {reviews.length > 0 && (
+        <button onClick={() => setRandomReview(getRandomReview(reviews))}>
+          Show Another Random Review
+        </button>
+      )}
     </div>
   );
-}
+};
 
 export default App;
