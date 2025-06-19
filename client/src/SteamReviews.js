@@ -12,7 +12,7 @@ function SteamReviews({ appid }) {
     setLoading(true);
 
     try {
-      const res = await axios.get(`http://localhost:5000/reviews/${appid}`, {
+      const res = await axios.get(`https://steamreviewrandomizer.onrender.com/reviews/${appid}`, {
         params: {
           cursor,
           num: 100,

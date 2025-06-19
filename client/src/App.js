@@ -15,7 +15,7 @@ function App() {
     setError('');
 
     try {
-      const response = await axios.get(`http://localhost:5000/search/${query}`);
+      const response = await axios.get(`https://steamreviewrandomizer.onrender.com/search/${query}`);
       if (response.data.length > 0) {
         setSearchResults(response.data);
       } else {
