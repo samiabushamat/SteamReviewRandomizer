@@ -4,6 +4,8 @@ import Card from './components/Card';
 import './styles/app.css';
 
 const App = () => {
+
+  // State variables
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [appid, setAppid] = useState(null);
@@ -11,6 +13,10 @@ const App = () => {
   const [randomReview, setRandomReview] = useState(null);
   const [gameName, setGameName] = useState('');
 
+
+  // Function to handle search
+  // It fetches game data based on the user's query
+  // and updates the results state with the fetched data.
   const handleSearch = async () => {
     try {
       const res = await axios.get(`https://steamreviewrandomizer.onrender.com/search/${query}`);
@@ -20,6 +26,9 @@ const App = () => {
     }
   };
 
+  // Function to fetch reviews for a specific game
+  // It takes the appid and game name as parameters,
+  // fetches reviews from the API, enriches them with the game name,
   const fetchReviews = async (appid, name) => {
     try {
       const res = await axios.get(`https://steamreviewrandomizer.onrender.com/reviews/${appid}?cursor=*&num=30`);
