@@ -31,15 +31,15 @@ app.get('/search/:query', async (req, res) => {
 
 app.get('/gameinfo/:appid', async (req, res) => {
   const { appid } = req.params;
-
   try {
     const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
     res.json(response.data);
   } catch (error) {
-    console.error("Steam API error:", error);
-    res.status(500).json({ error: 'Failed to fetch game name' });
+    console.error('Error fetching game info:', error.message);
+    res.status(500).json({ error: 'Failed to fetch game info' });
   }
 });
+
 
 
 app.get('/gamename/:appid', async (req, res) => {

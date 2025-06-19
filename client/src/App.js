@@ -19,7 +19,7 @@ const App = () => {
   // and updates the results state with the fetched data.
   const handleSearch = async () => {
     try {
-      const res = await axios.get(`https://steamreviewrandomizer.onrender.com/search/${query}`);
+      const res = await axios.get(`http://localhost:3000/gameinfo/${appid}`);
       setResults(res.data);
     } catch (err) {
       console.error(err);
@@ -31,7 +31,7 @@ const App = () => {
   // fetches reviews from the API, enriches them with the game name,
   const fetchReviews = async (appid, name) => {
     try {
-      const res = await axios.get(`https://steamreviewrandomizer.onrender.com/reviews/${appid}?cursor=*&num=30`);
+      const res = await axios.get(`http://localhost:5000/gameinfo/${appid}`);
       const enrichedReviews = res.data.reviews.map((review) => ({
         ...review,
         gameName: name,
@@ -59,7 +59,8 @@ const App = () => {
 
   const fetchGameName = async (appid) => {
     try {
-      const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
+      const response = await axios.get(`http://localhost:3000/gameinfo/${appid}`);
+
       const appData = response.data[String(appid)];
 
       if (appData && appData.success && appData.data?.name) {
