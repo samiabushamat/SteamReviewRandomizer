@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Card from './components/Card';
 import './styles/app.css';
+import { BASE_URL } from './config';
 
 const App = () => {
   const [query, setQuery] = useState('');
@@ -13,7 +14,8 @@ const App = () => {
 
   const handleSearch = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/search/${query}`);
+      const res = await axios.get(`${BASE_URL}/search/${query}`);
+
       setResults(res.data);
     } catch (err) {
       console.error("Search failed:", err);
@@ -22,7 +24,7 @@ const App = () => {
 
   const fetchGameName = async (appid) => {
     try {
-      const response = await axios.get(`http://localhost:5000/gameinfo/${appid}`);
+      const response = await axios.get(`${BASE_URL}/gameinfo/${appid}`);
       const appData = response.data[String(appid)];
       if (appData?.success && appData.data?.name) {
         return appData.data.name;
@@ -36,7 +38,7 @@ const App = () => {
 
   const fetchReviews = async (appid, name) => {
     try {
-      const res = await axios.get(`http://localhost:5000/reviews/${appid}?cursor=*&num=30`);
+      const res = await axios.get(`${BASE_URL}/reviews/${appid}?cursor=*&num=30`);
       const enrichedReviews = res.data.reviews.map((review) => ({
         ...review,
         gameName: name,

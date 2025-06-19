@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 
 
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://steam-review-randomizer.web.app'],
+  origin: ['http://localhost:5000', 'https://steam-review-randomizer.web.app'],
   methods: ['GET'],
 };
 
@@ -28,6 +28,18 @@ app.get('/search/:query', async (req, res) => {
     res.status(500).json({ error: 'Search failed' });
   }
 });
+
+app.get('/gameinfo/:appid', async (req, res) => {
+  const { appid } = req.params;
+  try {
+    const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching game info:', error.message);
+    res.status(500).json({ error: 'Failed to fetch game info' });
+  }
+});
+
 
 app.get('/reviews/:appid', async (req, res) => {
   const { appid } = req.params;
@@ -53,17 +65,6 @@ app.get('/reviews/:appid', async (req, res) => {
   }
 });
 
-
-app.get('/gameinfo/:appid', async (req, res) => {
-  const { appid } = req.params;
-  try {
-    const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
-    res.json(response.data);
-  } catch (error) {
-    console.error('Error fetching game info:', error.message);
-    res.status(500).json({ error: 'Failed to fetch game info' });
-  }
-});
 
 
 
