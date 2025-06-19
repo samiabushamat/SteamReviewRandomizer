@@ -22,7 +22,7 @@ const App = () => {
 
   const fetchReviews = async (appid, name) => {
     try {
-      const res = await axios.get(`http://localhost:3000/gameinfo/${appid}`);
+      const res = await axios.get(`https://steamreviewrandomizer.onrender.com/reviews/${appid}?cursor=*&num=30`);
       const enrichedReviews = res.data.reviews.map((review) => ({
         ...review,
         gameName: name,
@@ -45,24 +45,24 @@ const App = () => {
 
     const name = await fetchGameName(game.appid); // ✅ get actual name
     setGameName(name);                             // ✅ set game name
-    fetchReviews(game.appid, name);
+    fetchReviews(game.appid, name);                // ✅ pass name to reviews
   };
 
- const fetchGameName = async (appid) => {
-  try {
-    const response = await axios.get(`http://localhost:3000/gamename/${appid}`);
-    const appData = response.data[String(appid)];
+  const fetchGameName = async (appid) => {
+    try {
+      const response = await axios.get(`https://store.steampowered.com/api/appdetails?appids=${appid}`);
+      const appData = response.data[String(appid)];
 
-    if (appData && appData.success && appData.data?.name) {
-      return appData.data.name;
-    } else {
+      if (appData && appData.success && appData.data?.name) {
+        return appData.data.name;
+      } else {
+        return "Unknown Game";
+      }
+    } catch (error) {
+      console.error("Failed to fetch game name:", error);
       return "Unknown Game";
     }
-  } catch (error) {
-    console.error("Failed to fetch game name:", error);
-    return "Unknown Game";
-  }
-};
+  };
 
   return (
     <div className="app-container">
