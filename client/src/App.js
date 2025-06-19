@@ -22,7 +22,7 @@ const App = () => {
 
   const fetchReviews = async (appid, name) => {
     try {
-      const res = await axios.get(`https://steamreviewrandomizer.onrender.com/reviews/${appid}?cursor=*&num=30`);
+      const res = await axios.get(`http://localhost:5000/gameinfo/${appid}`);
       const enrichedReviews = res.data.reviews.map((review) => ({
         ...review,
         gameName: name,
