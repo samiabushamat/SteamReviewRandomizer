@@ -22,7 +22,7 @@ const App = () => {
 
   const fetchReviews = async (appid, name) => {
     try {
-      const res = await axios.get(`http://localhost:5000/gameinfo/${appid}`);
+      const res = await axios.get(`http://localhost:3000/gameinfo/${appid}`);
       const enrichedReviews = res.data.reviews.map((review) => ({
         ...review,
         gameName: name,
@@ -45,12 +45,12 @@ const App = () => {
 
     const name = await fetchGameName(game.appid); // ✅ get actual name
     setGameName(name);                             // ✅ set game name
-    fetchReviews(game.appid, name);                // ✅ pass name to reviews
+    fetchReviews(game.appid, name);
   };
 
  const fetchGameName = async (appid) => {
   try {
-    const response = await axios.get(`http://localhost:5000/gamename/${appid}`);
+    const response = await axios.get(`http://localhost:3000/gamename/${appid}`);
     const appData = response.data[String(appid)];
 
     if (appData && appData.success && appData.data?.name) {
