@@ -94,10 +94,23 @@ const App = () => {
           hoursPlayed={(randomReview.author.playtime_forever / 60).toFixed(1)}
           reactions={{
             thumbsUp: randomReview.votes_up,
+            thumbsDown: randomReview.votes_down,
             funny: randomReview.votes_funny,
           }}
         />
       )}
+
+      <Card
+        gameName="test"
+        reviewText="This is a test review to ensure the card component works."
+        reviewer="Test Reviewer"
+        hoursPlayed="10.5"
+        reactions={{
+          thumbsUp: 5,
+          thumbsDown: 3,
+          funny: 2,
+        }}
+      />
 
       {reviews.length > 0 && (
         <button onClick={() => setRandomReview(getRandomReview(reviews))}>
