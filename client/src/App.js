@@ -64,9 +64,11 @@ const App = () => {
   };
 
   return (
-    <div className="app-container">
-      <h1 className="body">Steam Review Randomizer</h1>
-      <div className="search-container">
+  <div className="app-container">
+    <h1 className="body">Steam Review Randomizer</h1>
+
+    <div className="search-container">
+      <div className="search-row">
         <input
           type="text"
           value={query}
@@ -77,7 +79,7 @@ const App = () => {
       </div>
 
       {results.length > 0 && (
-        <ul>
+        <ul className="search-results">
           {results.map((game) => (
             <li key={game.appid} onClick={() => handleSelectGame(game)}>
               {game.name}
@@ -85,39 +87,40 @@ const App = () => {
           ))}
         </ul>
       )}
+    </div>
 
-      {randomReview && (
-        <Card
-          gameName={randomReview.gameName}
-          reviewText={randomReview.review}
-          reviewer={randomReview.personaName}
-          hoursPlayed={(randomReview.author.playtime_forever / 60).toFixed(1)}
-          reactions={{
-            thumbsUp: randomReview.votes_up,
-            thumbsDown: randomReview.votes_down,
-            funny: randomReview.votes_funny,
-          }}
-        />
-      )}
-
+    {randomReview > 0 && (
       <Card
-        gameName="test"
-        reviewText="This is a test review to ensure the card component works."
-        reviewer="Test Reviewer"
-        hoursPlayed="10.5"
+        gameName={randomReview.gameName}
+        reviewText={randomReview.review}
+        reviewer={randomReview.personaName}
+        hoursPlayed={(randomReview.author.playtime_forever / 60).toFixed(1)}
         reactions={{
-          thumbsUp: 5,
-          thumbsDown: 3,
-          funny: 2,
+          thumbsUp: randomReview.votes_up,
+          thumbsDown: randomReview.votes_down,
+          funny: randomReview.votes_funny,
         }}
       />
+    )}
 
-      {reviews.length > 0 && (
-        <button onClick={() => setRandomReview(getRandomReview(reviews))}>
-          Show Another Random Review
-        </button>
-      )}
-    </div>
+    <Card
+      gameName="test"
+      reviewText="This is a test review to ensure the card component works."
+      reviewer="Test Reviewer"
+      hoursPlayed="10.5"
+      reactions={{
+        thumbsUp: 5,
+        thumbsDown: 3,
+        funny: 2,
+      }}
+    />
+
+    {reviews.length > 0 && (
+      <button onClick={() => setRandomReview(getRandomReview(reviews))}>
+        Show Another Random Review
+      </button>
+    )}
+  </div>
   );
 };
 
