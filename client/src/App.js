@@ -61,7 +61,6 @@ const App = () => {
     const name = await fetchGameName(game.appid);
     setGameName(name);
     setQuery(name);
-    console.log(`Selected game: ${name} (ID: ${game.appid})`);
     fetchReviews(game.appid, name);
   };
 
@@ -93,10 +92,9 @@ const App = () => {
         ))}
       </ul>
     )}
-
     </div>
 
-    {randomReview > 0 && (
+    {randomReview && (
       <Card
         gameName={randomReview.gameName}
         reviewText={randomReview.review}
