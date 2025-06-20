@@ -5,7 +5,7 @@ The **Steam Review Randomizer** is a full-stack web application that allows user
 ---
 
 ## 🚀 Live Demo
-🌐 [steamreviewrandomizer](https://steam-review-randomizer.web.app/))
+🌐 [steamreviewrandomizer](https://steam-review-randomizer.web.app/)
 
 ---
 
