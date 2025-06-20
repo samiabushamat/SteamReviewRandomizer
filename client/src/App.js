@@ -60,6 +60,8 @@ const App = () => {
     setResults([]);
     const name = await fetchGameName(game.appid);
     setGameName(name);
+    setQuery(name);
+    console.log(`Selected game: ${name} (ID: ${game.appid})`);
     fetchReviews(game.appid, name);
   };
 
