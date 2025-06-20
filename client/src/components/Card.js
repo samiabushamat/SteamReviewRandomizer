@@ -8,12 +8,11 @@ const Card = ({ gameName, reviewText, reviewer, hoursPlayed, reactions }) => {
       <h2>{gameName}</h2>
       <p className="review-text">"{reviewText}"</p>
       <div className="review-meta">
-        <span>👤 {reviewer}</span>
+        <span>Anonymous Reviewer {reviewer}</span>
         <span> | ⏱️ {hoursPlayed} hrs played</span>
         {reactions && (
           <>
             <span> | 👍 {reactions.thumbsUp}</span>
-            <span> | 👎 {reactions.thumbsDown}</span>
             <span> | 😂 {reactions.funny}</span>
           </>
         )}

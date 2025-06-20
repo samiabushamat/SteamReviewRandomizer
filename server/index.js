@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 
 
 const corsOptions = {
-  origin: ['http://localhost:5000', 'https://steam-review-randomizer.web.app'],
+  origin: ['http://localhost:5000', 'https://steam-review-randomizer.web.app','http://localhost:3000'],
   methods: ['GET'],
 };
 

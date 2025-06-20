@@ -85,16 +85,21 @@ ul {
   margin-top: 20px;
 }
 .shuffle-button {
+  display: inline-flex;             /* Align icon and text horizontally */
+  align-items: center;             /* Vertically center icon and text */
+  gap: 8px;                         /* Space between text and icon */
   background-color: #6012a0;
   color: white;
   padding: 10px 20px;
+  margin-top: 20px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-
+  font-size: 16px;
 }
+
 .shuffle-button:focus {
   outline: none;
 }

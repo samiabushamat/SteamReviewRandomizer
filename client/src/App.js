@@ -3,6 +3,7 @@ import axios from 'axios';
 import Card from './components/Card';
 import './styles/app.css';
 import { BASE_URL } from './config';
+import {FaRandom} from 'react-icons/fa';
 
 const App = () => {
   const [query, setQuery] = useState('');
@@ -15,7 +16,6 @@ const App = () => {
   const handleSearch = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/search/${query}`);
-
       setResults(res.data);
     } catch (err) {
       console.error("Search failed:", err);
@@ -44,11 +44,14 @@ const App = () => {
         gameName: name,
       }));
       setReviews(enrichedReviews);
-      setRandomReview(getRandomReview(enrichedReviews));
+      const random = getRandomReview(enrichedReviews);
+      setRandomReview(random);
+      
     } catch (err) {
       console.error("Review fetch failed:", err);
     }
   };
+
 
   const getRandomReview = (arr) => {
     if (!arr.length) return null;
@@ -102,15 +105,16 @@ const App = () => {
         hoursPlayed={(randomReview.author.playtime_forever / 60).toFixed(1)}
         reactions={{
           thumbsUp: randomReview.votes_up,
-          thumbsDown: randomReview.votes_down,
           funny: randomReview.votes_funny,
         }}
       />
+      
     )}
 
     {reviews.length > 0 && (
       <button className="shuffle-button" onClick={() => setRandomReview(getRandomReview(reviews))}>
-        Shuffle Review
+        <span>Random</span>
+        <FaRandom className="shuffle-icon" />
       </button>
     )}
   </div>
