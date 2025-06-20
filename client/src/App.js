@@ -78,15 +78,20 @@ const App = () => {
         <button className="search-button" onClick={handleSearch}>Search</button>
       </div>
 
-      {results.length > 0 && (
-        <ul className="search-results">
-          {results.map((game) => (
-            <li key={game.appid} onClick={() => handleSelectGame(game)}>
-              {game.name}
-            </li>
-          ))}
-        </ul>
-      )}
+    {results.length > 0 && (
+      <ul className="dropdown-results">
+        {results.map((game) => (
+          <li
+            key={game.appid}
+            className="dropdown-item"
+            onClick={() => handleSelectGame(game)}
+          >
+            <span className="game-name">{game.name}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+
     </div>
 
     {randomReview > 0 && (
@@ -103,21 +108,9 @@ const App = () => {
       />
     )}
 
-    <Card
-      gameName="test"
-      reviewText="This is a test review to ensure the card component works."
-      reviewer="Test Reviewer"
-      hoursPlayed="10.5"
-      reactions={{
-        thumbsUp: 5,
-        thumbsDown: 3,
-        funny: 2,
-      }}
-    />
-
     {reviews.length > 0 && (
-      <button onClick={() => setRandomReview(getRandomReview(reviews))}>
-        Show Another Random Review
+      <button className="shuffle-button" onClick={() => setRandomReview(getRandomReview(reviews))}>
+        Shuffle Review
       </button>
     )}
   </div>

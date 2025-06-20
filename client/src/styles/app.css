@@ -72,8 +72,61 @@ button:hover {
 ul {
   margin-top: 20px;
 }
+.shuffle-button {
+  background-color: #6012a0;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.shuffle-button:focus {
+  outline: none;
+}
+.shuffle-button:hover {
+  background-color: #7a1fbd;
+}
 
 li button {
   background-color: #333;
   margin: 5px;
 }
+.dropdown-results {
+  position: absolute; /* positions right below the input */
+  margin-top: 8px;
+  width: 400px;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  list-style: none;
+  padding: 0;
+  z-index: 100;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #2a2a2a;
+}
+
+.search-icon {
+  font-size: 18px;
+  opacity: 0.6;
+}
+
+.game-name {
+  font-size: 16px;
+}
+
