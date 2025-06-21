@@ -113,12 +113,11 @@ const App = () => {
 
     {reviews.length > 0 && (
       <button className="shuffle-button" onClick={() => setRandomReview(getRandomReview(reviews))}>
-        <span>Random</span>
+        <span>Stuffle</span>
         <FaRandom className="shuffle-icon" />
       </button>
     )}
   </div>
   );
 };
-
 export default App;
