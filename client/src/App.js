@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import Card from './components/Card';
 import './styles/app.css';
@@ -16,7 +16,7 @@ const App = () => {
   const [funnyOnly, setFunnyOnly] = useState(false);
   const [loading, setLoading] = useState(false);
   const randomPicked = React.useRef(false);
-
+  const latestFetchId = useRef(null);
 
   const handleSearch = async () => {
     try {
@@ -42,16 +42,18 @@ const App = () => {
   };
 
 
- const fetchReviews = async (appid, name, funnyOnly = false, maxReviews = 10000000, pickRandom = true) => {
+const fetchReviews = async (appid, name, funnyOnly = false, maxReviews = 10000000) => {
   let allReviews = [];
   let cursor = '*';
   let keepGoing = true;
-  let randomChosen = false;
+  const thisFetchId = Date.now();
+  latestFetchId.current = thisFetchId;
 
-  setLoading(true); // Optional: show spinner
-  
-  setRandomReview(null);    // Clear previous random review
-  setReviews([]);           // Clear previous reviews
+  setLoading(true);
+  setReviews([]);
+  setRandomReview(null);
+  randomPicked.current = false;
+
   try {
     while (keepGoing && allReviews.length < maxReviews) {
       const response = await fetch(
@@ -70,17 +72,16 @@ const App = () => {
         batch = batch.filter((r) => r.votes_funny > 10);
       }
 
-      allReviews = [...allReviews, ...batch];
+      if (batch.length > 0) {
+        if (latestFetchId.current !== thisFetchId) return;
+        allReviews = [...allReviews, ...batch];
+        setReviews((prev) => [...prev, ...batch]);
 
-      // Update UI with current batch
-      setReviews((prev) => [...prev, ...batch]);
-
-      if (pickRandom && !randomChosen && batch.length > 0) {
-        setRandomReview(getRandomReview(batch));
-        randomChosen = true; // Only pick one random review
+        if (!randomPicked.current) {
+          setRandomReview(getRandomReview(batch, funnyOnly));
+          randomPicked.current = true;
+        }
       }
-
-
 
       cursor = data.cursor;
 
@@ -96,8 +97,16 @@ const App = () => {
 
 
 
+
   const getRandomReview = (arr) => {
     if (!arr.length) return null;
+
+    const filtered = funnyOnly
+      ? arr.filter((r) => r.votes_funny > 10)
+      : arr;
+
+    if (!filtered.length) return null;
+    
     return arr[Math.floor(Math.random() * arr.length)];
   };
 
@@ -107,7 +116,7 @@ const App = () => {
     const name = await fetchGameName(game.appid);
     setGameName(name);
     setQuery(name);
-    fetchReviews(game.appid, name,funnyOnly, 10000, true);
+    fetchReviews(game.appid, name,funnyOnly, 10000000, true);
   };
 
 return (
@@ -119,6 +128,7 @@ return (
     <div className="app-container">
       <h1 className="body">Stuffle</h1>
       <p className="body">Search for a game to get started!</p>
+      <p className="body">Please wait for another search until we fetch all the reviews, especially for popular games. Thank you!</p>
       <div className="search-container">
         <div className="search-row">
           <input
@@ -140,13 +150,14 @@ return (
             className={`funny-toggle-button ${funnyOnly ? 'outline' : 'filled'}`}
             onClick={() => {
               const newFunnyOnly = !funnyOnly;
-              setFunnyOnly(newFunnyOnly);
+              setFunnyOnly(newFunnyOnly); 
               randomPicked.current = false;
               setReviews([]);
               setRandomReview(null);
+              setRandomReview(null);
               if (appid) {
                 const gameLabel = gameName || query;
-                fetchReviews(appid, gameLabel, newFunnyOnly,10000, true);
+                fetchReviews(appid, gameLabel, newFunnyOnly,10000000, true);
               }
             }}
           >
@@ -182,16 +193,17 @@ return (
           }}
         />
       )}
-      {loading && <p style={{ textAlign: 'center' }}>Loading reviews...</p>}
-      {loading && !randomReview && (
-        <p style={{ textAlign: 'center' }}>Finding something funny… </p>
-      )}
+        {loading && (
+          <p style={{ textAlign: 'center' }}>
+            {funnyOnly ? 'Finding something funny… ' : 'Loading reviews... Please wait for another search until we fetch all the reviews.'}
+          </p>
+        )}
 
 
       {reviews.length > 0 && (
         <button
           className="shuffle-button"
-          onClick={() => setRandomReview(getRandomReview(reviews))}
+          onClick={() => setRandomReview(getRandomReview(reviews,funnyOnly))}
         >
           <span>Stuffle</span>
           <FaRandom className="shuffle-icon" />
