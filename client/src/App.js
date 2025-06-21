@@ -77,7 +77,14 @@ const App = () => {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for a game..."
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleSearch();
+            }
+          }
+        }
+        placeholder="Search for a game..."
         />
         <button className="search-button" onClick={handleSearch}>Search</button>
       </div>
