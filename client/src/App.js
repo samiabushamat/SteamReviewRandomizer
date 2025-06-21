@@ -137,7 +137,7 @@ return (
             Search
           </button>
           <button
-            className={`funny-toggle-button ${funnyOnly ? 'filled' : 'outlined'}`}
+            className={`funny-toggle-button ${funnyOnly ? 'outline' : 'filled'}`}
             onClick={() => {
               const newFunnyOnly = !funnyOnly;
               setFunnyOnly(newFunnyOnly);
@@ -150,7 +150,7 @@ return (
               }
             }}
           >
-            {funnyOnly ? ' All' : 'Funny'}
+            {funnyOnly ? ' Funny' : 'All'}
           </button>
 
         </div>
