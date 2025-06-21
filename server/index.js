@@ -41,29 +41,21 @@ app.get('/gameinfo/:appid', async (req, res) => {
 });
 
 
+// For Node/Express
 app.get('/reviews/:appid', async (req, res) => {
-  const { appid } = req.params;
-  const { cursor = '*', num = 20 } = req.query;
+  const appid = req.params.appid;
+  const cursor = req.query.cursor || '*';
+  const num = req.query.num || 100;
 
   try {
-    const response = await axios.get(
-      `https://store.steampowered.com/appreviews/${appid}`,
-      {
-        params: {
-          json: 1,
-          cursor,
-          num_per_page: num,
-          filter: 'recent',
-          language: 'english',
-        },
-      }
-    );
-    res.json(response.data);
+    const steamRes = await fetch(`https://store.steampowered.com/appreviews/${appid}?json=1&cursor=${encodeURIComponent(cursor)}&num_per_page=${num}&filter=recent&language=english&purchase_type=all`);
+    const data = await steamRes.json();
+    res.json(data);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch reviews' });
+    res.status(500).json({ error: 'Steam API fetch failed', details: err.message });
   }
 });
+
 
 
 

@@ -13,6 +13,10 @@ const App = () => {
   const [reviews, setReviews] = useState([]);
   const [randomReview, setRandomReview] = useState(null);
   const [gameName, setGameName] = useState('');
+  const [funnyOnly, setFunnyOnly] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const randomPicked = React.useRef(false);
+
 
   const handleSearch = async () => {
     try {
@@ -37,21 +41,59 @@ const App = () => {
     }
   };
 
-  const fetchReviews = async (appid, name) => {
-    try {
-      const res = await axios.get(`${BASE_URL}/reviews/${appid}?cursor=*&num=30`);
-      const enrichedReviews = res.data.reviews.map((review) => ({
+
+ const fetchReviews = async (appid, name, funnyOnly = false, maxReviews = 10000000, pickRandom = true) => {
+  let allReviews = [];
+  let cursor = '*';
+  let keepGoing = true;
+  let randomChosen = false;
+
+  setLoading(true); // Optional: show spinner
+  
+  setRandomReview(null);    // Clear previous random review
+  setReviews([]);           // Clear previous reviews
+  try {
+    while (keepGoing && allReviews.length < maxReviews) {
+      const response = await fetch(
+        `${BASE_URL}/reviews/${appid}?cursor=${encodeURIComponent(cursor)}&num=100`
+      );
+      const data = await response.json();
+
+      if (!data.reviews || !data.reviews.length) break;
+
+      let batch = data.reviews.map((review) => ({
         ...review,
         gameName: name,
       }));
-      setReviews(enrichedReviews);
-      const random = getRandomReview(enrichedReviews);
-      setRandomReview(random);
-      
-    } catch (err) {
-      console.error("Review fetch failed:", err);
+
+      if (funnyOnly) {
+        batch = batch.filter((r) => r.votes_funny > 10);
+      }
+
+      allReviews = [...allReviews, ...batch];
+
+      // Update UI with current batch
+      setReviews((prev) => [...prev, ...batch]);
+
+      if (pickRandom && !randomChosen && batch.length > 0) {
+        setRandomReview(getRandomReview(batch));
+        randomChosen = true; // Only pick one random review
+      }
+
+
+
+      cursor = data.cursor;
+
+      await new Promise((res) => setTimeout(res, 500));
     }
-  };
+  } catch (err) {
+    console.error("Review fetch failed:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
 
   const getRandomReview = (arr) => {
@@ -65,7 +107,7 @@ const App = () => {
     const name = await fetchGameName(game.appid);
     setGameName(name);
     setQuery(name);
-    fetchReviews(game.appid, name);
+    fetchReviews(game.appid, name,funnyOnly, 10000, true);
   };
 
 return (
@@ -76,7 +118,7 @@ return (
 
     <div className="app-container">
       <h1 className="body">Stuffle</h1>
-
+      <p className="body">Search for a game to get started!</p>
       <div className="search-container">
         <div className="search-row">
           <input
@@ -94,6 +136,23 @@ return (
           <button className="search-button" onClick={handleSearch}>
             Search
           </button>
+          <button
+            className={`funny-toggle-button ${funnyOnly ? 'filled' : 'outlined'}`}
+            onClick={() => {
+              const newFunnyOnly = !funnyOnly;
+              setFunnyOnly(newFunnyOnly);
+              randomPicked.current = false;
+              setReviews([]);
+              setRandomReview(null);
+              if (appid) {
+                const gameLabel = gameName || query;
+                fetchReviews(appid, gameLabel, newFunnyOnly,10000, true);
+              }
+            }}
+          >
+            {funnyOnly ? ' All' : 'Funny'}
+          </button>
+
         </div>
 
         {results.length > 0 && (
@@ -123,6 +182,11 @@ return (
           }}
         />
       )}
+      {loading && <p style={{ textAlign: 'center' }}>Loading reviews...</p>}
+      {loading && !randomReview && (
+        <p style={{ textAlign: 'center' }}>Finding something funny… </p>
+      )}
+
 
       {reviews.length > 0 && (
         <button
