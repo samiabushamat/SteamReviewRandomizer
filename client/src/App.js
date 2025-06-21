@@ -69,7 +69,7 @@ const App = () => {
 
   return (
   <div className="app-container">
-    <h1 className="body">Steam Review Randomizer</h1>
+    <h1 className="body">Stuffle</h1>
 
     <div className="search-container">
       <div className="search-row">
