@@ -195,7 +195,7 @@ return (
       )}
         {loading && (
           <p style={{ textAlign: 'center' }}>
-            {funnyOnly ? 'Finding something funny… ' : 'Loading reviews... Please wait for another search until we fetch all the reviews.'}
+            {funnyOnly ? 'Finding something funny… Please Wait!' : 'Loading reviews... Please Wait!'}
           </p>
         )}
 
