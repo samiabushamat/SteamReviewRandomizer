@@ -4,6 +4,7 @@ import Card from './components/Card';
 import './styles/app.css';
 import { BASE_URL } from './config';
 import {FaRandom} from 'react-icons/fa';
+import GoogleAd from './components/AdBanner';
 
 const App = () => {
   const [query, setQuery] = useState('');
@@ -67,64 +68,78 @@ const App = () => {
     fetchReviews(game.appid, name);
   };
 
-  return (
-  <div className="app-container">
-    <h1 className="body">Stuffle</h1>
-
-    <div className="search-container">
-      <div className="search-row">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              handleSearch();
-            }
-          }
-        }
-        placeholder="Search for a game..."
-        />
-        <button className="search-button" onClick={handleSearch}>Search</button>
-      </div>
-
-    {results.length > 0 && (
-      <ul className="dropdown-results">
-        {results.map((game) => (
-          <li
-            key={game.appid}
-            className="dropdown-item"
-            onClick={() => handleSelectGame(game)}
-          >
-            <span className="game-name">{game.name}</span>
-          </li>
-        ))}
-      </ul>
-    )}
+return (
+  <div className="app-wrapper">
+    <div className="side-ad left-ad">
+      <GoogleAd />
     </div>
 
-    {randomReview && (
-      <Card
-        gameName={randomReview.gameName}
-        reviewText={randomReview.review}
-        reviewer={randomReview.personaName}
-        hoursPlayed={(randomReview.author.playtime_forever / 60).toFixed(1)}
-        reactions={{
-          thumbsUp: randomReview.votes_up,
-          funny: randomReview.votes_funny,
-        }}
-      />
-      
-    )}
+    <div className="app-container">
+      <h1 className="body">Stuffle</h1>
 
-    {reviews.length > 0 && (
-      <button className="shuffle-button" onClick={() => setRandomReview(getRandomReview(reviews))}>
-        <span>Stuffle</span>
-        <FaRandom className="shuffle-icon" />
-      </button>
-    )}
+      <div className="search-container">
+        <div className="search-row">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSearch();
+              }
+            }}
+            placeholder="Search for a game..."
+          />
+          <button className="search-button" onClick={handleSearch}>
+            Search
+          </button>
+        </div>
+
+        {results.length > 0 && (
+          <ul className="dropdown-results">
+            {results.map((game) => (
+              <li
+                key={game.appid}
+                className="dropdown-item"
+                onClick={() => handleSelectGame(game)}
+              >
+                <span className="game-name">{game.name}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {randomReview && (
+        <Card
+          gameName={randomReview.gameName}
+          reviewText={randomReview.review}
+          reviewer={randomReview.personaName}
+          hoursPlayed={(randomReview.author.playtime_forever / 60).toFixed(1)}
+          reactions={{
+            thumbsUp: randomReview.votes_up,
+            funny: randomReview.votes_funny,
+          }}
+        />
+      )}
+
+      {reviews.length > 0 && (
+        <button
+          className="shuffle-button"
+          onClick={() => setRandomReview(getRandomReview(reviews))}
+        >
+          <span>Stuffle</span>
+          <FaRandom className="shuffle-icon" />
+        </button>
+      )}
+    </div>
+
+    {/* Right Ad */}
+    <div className="side-ad right-ad">
+      <GoogleAd />
+    </div>
   </div>
-  );
-};
+);
+}
 export default App;

@@ -152,3 +152,44 @@ li button {
   font-size: 16px;
 }
 
+
+.app-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+/* Shared ad styles */
+.side-ad {
+  width: 200px;
+  position: sticky;
+  top: 20px;
+}
+
+/* Optional: space around ads */
+.left-ad {
+  margin-right: 20px;
+}
+
+.right-ad {
+  margin-left: 20px;
+}
+
+
+@media (max-width: 768px) {
+  .side-ad {
+    display: none;
+  }
+
+  .app-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app-container {
+    width: 100%;
+  }
+}
+
